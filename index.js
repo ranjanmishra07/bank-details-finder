@@ -15,37 +15,35 @@ var Bankinfo=mongoose.model("Bankinfo",
            "bankinfo");
 
 
+
+
 app.get('*',(req,res)=>{
    res.send("invalid endpoint")
 })
 
 app.post('/details',(req,res)=>{
-    var ifsc=req.body.ifsc;
-	if(!ifsc){
-		return res.status(404).json({error:true,message:"no ifsc provided"})
-	}
-	return Bankinfo.find({ifsc:ifsc})
-	        .exec()
-	        .then(branchdetails=>{
-	        	if(!branchdetails){
-	        		return res.status(500).send("invaid ifsc ")
-	        	}
-	        	res.status(200).json({branchdetails})
-	        	
-	        		        })
-	        .catch(e=>res.send("invalid ifsc"))
+    return Bankinfo.findOne({ifsc:req.body.ifsc})
+                   .exec()
+                   .then((details)=>{
+                      if(!details){
+                      	return res.status(400).send("invalid ifsc")
+                      }
+                      res.send({details});
+                   })
 	       
 })
 
-app.post('/details2',(req,res)=>{
-	var city=req.body.city;
-	var bankname=req.body.bankname;
-	if(!city || !bankname){
-		return res.status(404).json({error:true,message:"no ifsc provided"})
-	}
 
-	return Bankinfo.find({city:city,bank_name:bankname})
+app.post('/details2',(req,res)=>{
+	// var city=req.body.city;
+	// var bankname=req.body.bankname;
+	// if(!city || !bankname){
+	// 	return res.status(404).json({error:true,message:"no ifsc provided"})
+	// }
+
+	return Bankinfo.find({city:req.body.city,bank_name:req.body.bankname},)
 	        .exec()
+	        
 	        .then(branchdetails=>{
 	        	if(!branchdetails){
 	        		return res.status(500).send("invaid ifsc ")
